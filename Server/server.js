@@ -29,7 +29,6 @@ const corsOptions = {
 
 app.set('trust proxy', 1) // needed when app is behind a proxy like Render Cloudflare
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 const cookieParser = require('cookie-parser');
 const connectToDb = require('./Config/db')
