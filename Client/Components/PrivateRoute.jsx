@@ -8,9 +8,13 @@ export default function PrivateRoute({ children }) {
   const [auth, setAuth] = useState(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
     fetch(`${baseURL}/api/auth/me`, {
       method: "GET",
       credentials: "include",
+      headers,
     })
       .then((res) => setAuth(res.ok))
       .catch(() => setAuth(false));

@@ -126,6 +126,8 @@ function getUserColor(userIdOrEmail) {
 export default function Editor() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
   const [docTitle, setDocTitle] = useState("");
   const [docOwnerId, setDocOwnerId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -194,6 +196,7 @@ export default function Editor() {
     try {
       const res = await fetch(`${baseURL}/api/documents/${id}`, {
         credentials: "include",
+        headers: authHeaders,
       });
       const data = await res.json();
       if (res.ok && data.data?.collaborators) {
@@ -214,7 +217,7 @@ export default function Editor() {
       const res = await fetch(`${baseURL}/api/documents/${id}/collaborators`, {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders },
         body: JSON.stringify({ email: collaboratorEmail }),
       });
       const data = await res.json();
@@ -245,6 +248,7 @@ export default function Editor() {
       try {
         const res = await fetch(`${baseURL}/api/documents/${id}`, {
           credentials: "include",
+          headers: authHeaders,
         });
         const data = await res.json();
         if (!res.ok) throw new Error();
@@ -276,7 +280,7 @@ export default function Editor() {
       await fetch(`${baseURL}/api/documents/${id}`, {
         method: "PUT",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders },
         body: JSON.stringify({ title: docTitle, content: editor.getHTML() }),
       });
     } catch {

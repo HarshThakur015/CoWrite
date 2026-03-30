@@ -14,6 +14,8 @@ function stripHtml(html) {
 
 export default function Dashboard() {
   const { auth: user } = useAuth();
+  const token = localStorage.getItem("token");
+  const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -34,6 +36,7 @@ export default function Dashboard() {
       const res = await fetch(`${baseURL}/api/documents`, {
         method: "GET",
         credentials: "include",
+        headers: authHeaders,
       });
       const data = await res.json();
       
@@ -85,6 +88,7 @@ export default function Dashboard() {
       const res = await fetch(`${baseURL}/api/documents/${deleteId}`, {
         method: "DELETE",
         credentials: "include" ,
+        headers: authHeaders,
       });
       const data = await res.json();
       if (res.ok) {
@@ -111,7 +115,7 @@ export default function Dashboard() {
     try {
       const res = await fetch(`${baseURL}/api/documents/${renameId}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders },
         credentials: "include",
         body: JSON.stringify({ title: renameTitle }),
       });
@@ -139,7 +143,7 @@ export default function Dashboard() {
       const res = await fetch(`${baseURL}/api/documents`, {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders },
         body: JSON.stringify({
           title: "Untitled Document",
           content: "<p></p>",

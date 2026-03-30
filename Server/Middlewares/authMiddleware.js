@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken')
 
 const verifyToken = (req, res, next) => {
-    console.log('authMiddleware req.cookies:', req.cookies)
+    if (process.env.NODE_ENV !== 'production') {
+        console.log('authMiddleware req.cookies:', req.cookies)
+    }
     const cookieToken = req.cookies?.token
     const bearerToken = req.headers?.authorization?.split(' ')[1]
     const token = cookieToken || bearerToken

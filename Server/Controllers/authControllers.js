@@ -4,6 +4,30 @@ const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library')
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 
+const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
+
+const getCookieOptions = (req) => {
+    const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
+
+    return {
+        httpOnly: true,
+        secure: isHttps,
+        sameSite: isHttps ? 'none' : 'lax',
+        path: '/',
+        maxAge: COOKIE_MAX_AGE
+    };
+};
+
+const getClearCookieOptions = (req) => {
+    const { secure, sameSite, path } = getCookieOptions(req);
+    return {
+        httpOnly: true,
+        secure,
+        sameSite,
+        path
+    };
+};
+
 const signup = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -34,15 +58,7 @@ const signup = async (req, res) => {
         await newUser.save();
 
         const jwtToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-        const isProd = process.env.NODE_ENV === 'production';
-
-        res.cookie('token', jwtToken, {
-            httpOnly: true,
-            secure: isProd,
-            sameSite: 'none',
-            path: '/',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        res.cookie('token', jwtToken, getCookieOptions(req))
 
         return res.status(201).json({
             message: 'User signed-up successfully',
@@ -88,15 +104,7 @@ const googleSignup = async (req, res) => {
         }
 
         const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-        const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
-
-        res.cookie('token', jwtToken, {
-            httpOnly: true,
-            secure: isHttps,
-            sameSite: 'none',
-            path: '/',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        res.cookie('token', jwtToken, getCookieOptions(req))
 
         return res.status(200).json({
             message: 'User signed in via Google',
@@ -137,15 +145,7 @@ const login = async (req, res) => {
         }
 
         const jwtToken = jwt.sign({ id: userExist._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-        const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
-
-        res.cookie('token', jwtToken, {
-            httpOnly: true,
-            secure: isHttps,
-            sameSite: 'none',
-            path: '/',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        res.cookie('token', jwtToken, getCookieOptions(req))
 
         return res.status(200).json({
             message: 'User logged in successfully',
@@ -191,11 +191,7 @@ const me = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        res.clearCookie('token', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-        });
+        res.clearCookie('token', getClearCookieOptions(req));
         return res.status(200).json({ message: "Logged out successfully" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
