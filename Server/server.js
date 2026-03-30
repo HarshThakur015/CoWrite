@@ -4,6 +4,8 @@ require('dotenv').config()
 const cors = require('cors');
 
 const frontendUrl = (process.env.FRONTEND_URL || '').replace(/\/+$/, '');
+
+app.set('trust proxy', 1) // needed when app is behind a proxy like Render Cloudflare
 app.use(cors({
     origin: frontendUrl,
     credentials: true,
