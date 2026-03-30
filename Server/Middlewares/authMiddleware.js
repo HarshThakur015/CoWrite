@@ -2,7 +2,10 @@ const jwt = require('jsonwebtoken')
 
 const verifyToken = (req, res, next) => {
     console.log('authMiddleware req.cookies:', req.cookies)
-    const token = req.cookies.token
+    const cookieToken = req.cookies?.token
+    const bearerToken = req.headers?.authorization?.split(' ')[1]
+    const token = cookieToken || bearerToken
+
     if (!token) {
         return res.status(401).json({ message: 'No token, provided' })
     }

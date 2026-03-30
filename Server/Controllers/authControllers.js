@@ -88,11 +88,11 @@ const googleSignup = async (req, res) => {
         }
 
         const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-        const isProd = process.env.NODE_ENV === 'production';
+        const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
 
         res.cookie('token', jwtToken, {
             httpOnly: true,
-            secure: isProd,
+            secure: isHttps,
             sameSite: 'none',
             path: '/',
             maxAge: 7 * 24 * 60 * 60 * 1000
@@ -137,11 +137,11 @@ const login = async (req, res) => {
         }
 
         const jwtToken = jwt.sign({ id: userExist._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-        const isProd = process.env.NODE_ENV === 'production';
+        const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
 
         res.cookie('token', jwtToken, {
             httpOnly: true,
-            secure: isProd,
+            secure: isHttps,
             sameSite: 'none',
             path: '/',
             maxAge: 7 * 24 * 60 * 60 * 1000
