@@ -47,6 +47,7 @@ export default function Login() {
       });
       const data = await res.json();
       if (res.ok) {
+        localStorage.setItem('token', data.token);
         setAuth(data.user);
         toast.success("Login successful!");
         setForm({ email: "", password: "" });
@@ -74,6 +75,7 @@ export default function Login() {
       });
       const data = await res.json();
       if (res.ok) {
+        localStorage.setItem('token', data.token);
         setAuth(data.user);
         toast.success("Google login successful!");
         navigate("/dashboard");

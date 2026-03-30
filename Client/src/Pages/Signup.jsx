@@ -55,6 +55,7 @@ export default function Signup() {
       });
       const data = await res.json();
       if (res.ok) {
+        localStorage.setItem('token', data.token);
         setAuth(data.user);
         toast.success("Signup successful!");
         setForm({ name: "", email: "", password: "" });
@@ -82,6 +83,7 @@ export default function Signup() {
       });
       const data = await res.json();
       if (res.ok) {
+        localStorage.setItem('token', data.token);
         setAuth(data.user);
         toast.success("Google signup successful!");
         navigate("/dashboard");
