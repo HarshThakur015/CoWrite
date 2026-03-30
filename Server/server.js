@@ -3,7 +3,7 @@ const app = express()
 require('dotenv').config()
 const cors = require('cors');
 
-const frontendUrl = (process.env.FRONTEND_URL || '').replace(/\/\/+$/, '');
+const frontendUrl = (process.env.FRONTEND_URL || '').replace(/\/+$/, '');
 app.use(cors({
     origin: frontendUrl,
     credentials: true,
