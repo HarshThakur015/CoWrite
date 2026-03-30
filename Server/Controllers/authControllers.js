@@ -34,11 +34,13 @@ const signup = async (req, res) => {
         await newUser.save();
 
         const jwtToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        const isProd = process.env.NODE_ENV === 'production';
 
         res.cookie('token', jwtToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            secure: isProd,
+            sameSite: 'none',
+            path: '/',
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
@@ -86,11 +88,13 @@ const googleSignup = async (req, res) => {
         }
 
         const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        const isProd = process.env.NODE_ENV === 'production';
 
         res.cookie('token', jwtToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            secure: isProd,
+            sameSite: 'none',
+            path: '/',
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
@@ -133,11 +137,13 @@ const login = async (req, res) => {
         }
 
         const jwtToken = jwt.sign({ id: userExist._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        const isProd = process.env.NODE_ENV === 'production';
 
         res.cookie('token', jwtToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            secure: isProd,
+            sameSite: 'none',
+            path: '/',
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
