@@ -177,7 +177,7 @@
 This project is actively being developed. Contributions and ideas are welcome!
 
 ---
-**Netlify**:- https://krishan-cowrite.netlify.app  
-**Render**:- https://cowrite-x48q.onrender.com
+**Netlify**:- https://co-write-nu.vercel.app/
+**Render**:- https://cowrite-vn5s.onrender.com
 
 Stay tuned for updates, and feel free to fork, star ⭐,"# CoWrite" 
